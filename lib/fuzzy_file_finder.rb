@@ -119,9 +119,8 @@ class FuzzyFileFinder
   # The list of glob patterns to ignore.
   attr_reader :ignores
 
-  # The function used to build the CharacterRun instances that output the highlighted text
-  # in the desired format.
-  attr_reader :highlighted_match_factory
+  # The class used to output the highlighted text in the desired format.
+  attr_reader :highlighted_match_class
 
   # Initializes a new FuzzyFileFinder. This will scan the
   # given +directories+, using +ceiling+ as the maximum number
@@ -143,7 +142,7 @@ class FuzzyFileFinder
 
     @ignores = Array(ignores)
 
-    @highlighted_match_factory = highlighter
+    @highlighted_match_class = highlighter
 
     rescan!
   end
@@ -290,7 +289,7 @@ class FuzzyFileFinder
           if runs.last && runs.last.inside == inside
             runs.last.string << capture
           else
-            runs << @highlighted_match_factory.new(capture, inside)
+            runs << @highlighted_match_class.new(capture, inside)
           end
 
           if !inside && is_word_prefixes && index != match.captures.length - 1
