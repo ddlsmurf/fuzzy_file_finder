@@ -293,7 +293,7 @@ class FuzzyFileFinder
             runs << @highlighted_match_factory.new(capture, inside)
           end
 
-          if (!inside) && is_word_prefixes && index != match.captures.length - 1
+          if !inside && is_word_prefixes && index != match.captures.length - 1
             if capture.match(/[A-Za-z]$/i) #if this inbetween item finishes with a letter, the next is not an initial letter
               is_word_prefixes = false
             end
