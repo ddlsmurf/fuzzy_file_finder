@@ -105,11 +105,15 @@ class FuzzyFileFinder
   # The list of glob patterns to ignore.
   attr_reader :ignores
 
+  # The function used to build the CharacterRun instances that output the highlighted text
+  # in the desired format.
+  attr_reader :highlighted_match_factory
+
   # Initializes a new FuzzyFileFinder. This will scan the
   # given +directories+, using +ceiling+ as the maximum number
   # of entries to scan. If there are more than +ceiling+ entries
   # a TooManyEntries exception will be raised.
-  def initialize(directories=['.'], ceiling=10_000, ignores=nil)
+  def initialize(directories=['.'], ceiling=10_000, ignores=nil, highlighter=CharacterRun)
     directories = Array(directories)
     directories << "." if directories.empty?
 
@@ -124,6 +128,8 @@ class FuzzyFileFinder
     @ceiling = ceiling
 
     @ignores = Array(ignores)
+
+    @highlighted_match_factory = highlighter
 
     rescan!
   end
@@ -270,7 +276,7 @@ class FuzzyFileFinder
           if runs.last && runs.last.inside == inside
             runs.last.string << capture
           else
-            runs << CharacterRun.new(capture, inside)
+            runs << @highlighted_match_factory.new(capture, inside)
           end
 
           if (!inside) && is_word_prefixes && index != match.captures.length - 1
