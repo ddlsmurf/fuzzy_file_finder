@@ -325,7 +325,7 @@ class FuzzyFileFinder
         full_match_result = path_match[:result].empty? ? match_result[:result] : File.join(path_match[:result], match_result[:result])
         shortened_path = path_match[:result].gsub(/[^\/]+/) { |m| m.index("(") ? m : m[0,1] }
         abbr = shortened_path.empty? ? match_result[:result] : File.join(shortened_path, match_result[:result])
-        plain_score = path_match[:score] * match_result[:score]
+        plain_score = (path_match[:score] * match_result[:score]) / 2.0
 
         result = { :path => file.path,
                    :abbr => abbr,
@@ -334,8 +334,7 @@ class FuzzyFileFinder
                    :highlighted_directory => path_match[:result],
                    :highlighted_name => match_result[:result],
                    :highlighted_path => full_match_result,
-                   :score => plain_score,
-                   :smart_score => (match_result[:is_word_start_match] ? 1 : 0) + plain_score }
+                   :score => (match_result[:is_word_start_match] ? 0.5 : 0) + plain_score }
         yield result
       end
     end
