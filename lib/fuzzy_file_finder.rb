@@ -33,6 +33,9 @@
 # * test/(app)/(blog)_(con)troller_test.rb
 #
 # And so forth.
+
+require 'CGI'
+
 class FuzzyFileFinder
   module Version
     MAJOR = 1
@@ -56,6 +59,17 @@ class FuzzyFileFinder
         "(#{string})"
       else
         string
+      end
+    end
+  end
+
+  # Just like CharacterRun except outputs HTML.
+  class HtmlCharacterRun < Struct.new(:string, :inside) #:nodoc:
+    def to_s
+      if inside
+        "<span class=\"fuzzyff_match\">#{CGI.escapeHTML(string)}</span>"
+      else
+        CGI.escapeHTML(string)
       end
     end
   end
